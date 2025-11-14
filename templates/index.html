@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Skin Condition Classifier</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+    <h1>Skin Condition Multi-Label Classifier</h1>
+
+    <form method="POST" action="/predict" enctype="multipart/form-data">
+        <input type="file" name="file" required>
+        <button type="submit">Predict</button>
+    </form>
+
+    {% if image_path %}
+        <div class="preview">
+            <h2>Uploaded Image</h2>
+            <img src="{{ image_path }}" alt="Uploaded image">
+        </div>
+    {% endif %}
+
+    {% if result %}
+        <div class="results">
+            <h2>Predictions</h2>
+            <table border="1">
+                <tr>
+                    <th>Condition</th>
+                    <th>Probability</th>
+                    <th>Prediction</th>
+                </tr>
+
+                {% for label, data in result.items() %}
+                    <tr>
+                        <td>{{ label }}</td>
+                        <td>{{ "%.3f"|format(data.probability) }}</td>
+                        <td>
+                            {% if data.prediction == 1 %}
+                                <span style="color: green;">Yes</span>
+                            {% else %}
+                                <span style="color: red;">No</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    {% endif %}
+
+</body>
+</html>

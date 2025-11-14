@@ -1,16 +1,21 @@
 from cnnClassifier.config.configuration import ConfigurationManager
 from cnnClassifier.components.data_ingestion import DataIngestion
 from cnnClassifier.components.prepare_base_model import PrepareBaseModel
+from cnnClassifier.components.model_training import ModelTraining
+
 
 from cnnClassifier.entity.config_entity import (
     DataIngestionConfig,
-    PrepareBaseModelConfig)
+    PrepareBaseModelConfig,
+    TrainingConfig,)
 
-    
+
 from cnnClassifier.entity.artifact_entity import (
     DataIngestionArtifact,
     PrepareBaseModelArtifact,
+    ModelTrainingArtifact
 )
+
 from cnnClassifier.logger.logging import logger
 
 
@@ -30,6 +35,9 @@ class TrainingPipeline:
         logger.info("Completed data ingestion in TrainingPipeline")
         return data_ingestion_artifact
 
+
+
+
     def start_prepare_base_model(self) -> PrepareBaseModelArtifact:
         logger.info("Entered start_prepare_base_model of TrainingPipeline")
 
@@ -42,15 +50,58 @@ class TrainingPipeline:
         logger.info("Completed prepare_base_model in TrainingPipeline")
         return prepare_base_model_artifact
 
+
+
+
+
+
+    def start_model_training(
+        self,
+        data_ingestion_artifact: DataIngestionArtifact,
+        prepare_base_model_artifact: PrepareBaseModelArtifact,
+    ) -> ModelTrainingArtifact:
+        logger.info("Entered start_model_training of TrainingPipeline")
+
+        config = ConfigurationManager()
+        training_config = config.get_training_config()
+
+        model_trainer = ModelTraining(
+            config=training_config,
+            params=config.params,
+            data_ingestion_artifact=data_ingestion_artifact,
+            prepare_base_model_artifact=prepare_base_model_artifact,
+        )
+
+        model_training_artifact = model_trainer.initiate_model_training()
+
+        logger.info("Completed model_training in TrainingPipeline")
+        return model_training_artifact
+    
+
+
+
+
+
+
+
+
     def main(self):
         try:
             logger.info("=== Training Pipeline started ===")
 
             # Stage 01
-            _ = self.start_data_ingestion()
+            data_ingestion_artifact= self.start_data_ingestion()
 
             # Stage 02
-            _ = self.start_prepare_base_model()
+            prepare_base_model_artifact = self.start_prepare_base_model()
+
+
+
+             # Stage 03
+            _ = self.start_model_training(
+                data_ingestion_artifact=data_ingestion_artifact,
+                prepare_base_model_artifact=prepare_base_model_artifact,
+            )
 
             logger.info("=== Training Pipeline finished (Stages 1 & 2) ===")
 

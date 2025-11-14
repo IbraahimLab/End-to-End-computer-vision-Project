@@ -1,7 +1,7 @@
 from pathlib import Path
 from cnnClassifier.constants import CONFIG_FILE_PATH, PARAMS_FILE_PATH
 from cnnClassifier.utils.common import * 
-from cnnClassifier.entity.config_entity import DataIngestionConfig ,PrepareBaseModelConfig
+from cnnClassifier.entity.config_entity import DataIngestionConfig ,PrepareBaseModelConfig , TrainingConfig
 
 CONFIG_FILE_PATH = Path("config.yaml")
 PARAMS_FILE_PATH = Path("params.yaml")
@@ -40,12 +40,12 @@ class ConfigurationManager:
 
 
     def get_prepare_base_model_config(self) -> PrepareBaseModelConfig:
-        config = self.config.prepare_base_model
+        config = self.config["prepare_base_model"]
         params = self.params
 
-        root_dir = Path(config.root_dir)
-        base_model_path = Path(config.base_model_path)
-        updated_base_model_path = Path(config.updated_base_model_path)
+        root_dir = Path(config["root_dir"])
+        base_model_path = Path(config["base_model_path"])
+        updated_base_model_path = Path(config["updated_base_model_path"])
 
         create_directories([root_dir, base_model_path.parent, updated_base_model_path.parent])
 
@@ -53,9 +53,24 @@ class ConfigurationManager:
             root_dir=root_dir,
             base_model_path=base_model_path,
             updated_base_model_path=updated_base_model_path,
-            params_image_size=params.IMAGE_SIZE,
-            params_learning_rate=params.LEARNING_RATE,
-            params_include_top=params.INCLUDE_TOP,
-            params_weights=params.WEIGHTS,
-            params_classes=params.CLASSES,
+            params_image_size=params["IMAGE_SIZE"],
+            params_learning_rate=params["LEARNING_RATE"],
+            params_include_top=params["INCLUDE_TOP"],
+            params_weights=params["WEIGHTS"],
+            params_classes=params["CLASSES"],
+        )
+
+
+
+    def get_training_config(self) -> TrainingConfig:
+        config = self.config.training
+
+        root_dir = Path(config.root_dir)
+        trained_model_path = Path(config.trained_model_path)
+
+        create_directories([root_dir, trained_model_path.parent])
+
+        return TrainingConfig(
+            root_dir=root_dir,
+            trained_model_path=trained_model_path,
         )

@@ -1,5 +1,5 @@
 from cnnClassifier.pipeline.training_pipeline import TrainingPipeline
-from cnnClassifier import logger
+from cnnClassifier.logger.logging import logger
 
 if __name__ == "__main__":
     try:

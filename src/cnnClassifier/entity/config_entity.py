@@ -22,4 +22,10 @@ class PrepareBaseModelConfig:
     params_classes: int
 
 
-    
+
+
+
+@dataclass(frozen=True)
+class TrainingConfig:
+    root_dir: Path
+    trained_model_path: Path

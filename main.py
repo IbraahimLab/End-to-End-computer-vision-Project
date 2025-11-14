@@ -1,10 +1,10 @@
-from cnnClassifier.pipeline.training_pipeline import DataIngestionTrainingPipeline
-from cnnClassifier.logger.logging import logger
+from cnnClassifier.pipeline.training_pipeline import TrainingPipeline
+from cnnClassifier import logger
 
 if __name__ == "__main__":
     try:
-        obj = DataIngestionTrainingPipeline()
-        obj.main()
+        pipeline = TrainingPipeline()
+        pipeline.main()
     except Exception as e:
         logger.error(e)
         raise e

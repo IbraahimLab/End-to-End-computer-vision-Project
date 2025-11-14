@@ -8,3 +8,9 @@ class DataIngestionArtifact:
 
 
 
+@dataclass(frozen=True)
+class PrepareBaseModelArtifact:
+    base_model_path: Path
+    updated_base_model_path: Path
+
+    
